@@ -1,0 +1,11 @@
+{
+  "output": "video2.mp4",
+  "options": {
+    "fps": 25,
+    "loop": 5,
+    "transition": false,
+    "transitionDuration": 1,
+    "size": "640x?"
+  },
+  "images": ["./faces/1504999753075.jpg","./faces/1504999763098.jpg"]
+}
