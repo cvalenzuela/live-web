@@ -57,6 +57,9 @@ module.exports = (origin_path, destination_path, format) => {
           });
         } else {
           console.log('No face detected');
+          fs.unlink(imageSource, () => {
+            console.log('New face saved to', destination);
+          })
         }
       });
     })

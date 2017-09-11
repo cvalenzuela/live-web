@@ -1,5 +1,5 @@
 portrait/node_modules/
 portrait/faces/*.jpg
-raw_pictures/*.jpg
+portrait/raw_pictures/*.jpg
 videos/
 *.mp4
