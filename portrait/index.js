@@ -31,20 +31,20 @@ process.argv[2] ? takePictureEvery = process.argv[2] : takePictureEvery = 5;
 process.argv[3] ? createVideoEvery = process.argv[3] : createVideoEvery = 6;
 
 // Intervals
-console.log('Running...')
-setInterval(function(){
-  getFace(rawImagesPath, facesPath, fileFormat);
-}, takePictureEvery*1000*60);
-setInterval(function(){
-  createVideo(videoPath, facesPath, fileFormat);
-}, createVideoEvery*1000*60);
+console.log('Running..')
+// setInterval(function(){
+//   getFace(rawImagesPath, facesPath, fileFormat);
+// }, takePictureEvery*1000*60);
+// setInterval(function(){
+//   createVideo(videoPath, facesPath, fileFormat);
+// }, createVideoEvery*1000*60);
 
 // Debug
 //getFace(rawImagesPath, facesPath, fileFormat);
 //createVideo(videoPath, facesPath, fileFormat);
-// setInterval(function(){
-//   getFace(rawImagesPath, facesPath, fileFormat);
-// }, 5000);
-// setInterval(function(){
-//   createVideo(videoPath, facesPath, fileFormat);
-// }, 5000);
+setInterval(function(){
+  getFace(rawImagesPath, facesPath, fileFormat);
+}, 5000);
+setInterval(function(){
+  createVideo(videoPath, facesPath, fileFormat);
+}, 15000);

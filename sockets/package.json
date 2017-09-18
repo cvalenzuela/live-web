@@ -1,0 +1,26 @@
+{
+  "name": "simple-socket-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify client/index.js -o client/dist/bundle.js",
+    "server": "node server/index.js",
+    "develop:server": "nodemon server/index.js",
+    "develop:client": "watchify client/index.js -o client/dist/bundle.js"
+  },
+  "author": "Cristobal Valenzuela <cvalenzuela@nyu.edu> (https://github.com/cvalenzuela)",
+  "license": "ISC",
+  "devDependencies": {
+    "apiai": "4.0.3",
+    "browserify": "14.4.0",
+    "express": "4.15.4",
+    "live-server": "1.2.0",
+    "nodemon": "1.12.1",
+    "socket.io": "2.0.3",
+    "watchify": "3.9.0"
+  },
+  "dependencies": {
+    "socket.io-client": "2.0.3"
+  }
+}

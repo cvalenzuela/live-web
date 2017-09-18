@@ -3,3 +3,4 @@ portrait/faces/*.jpg
 portrait/raw_pictures/*.jpg
 videos/
 *.mp4
+**/node_modules

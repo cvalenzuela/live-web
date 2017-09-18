@@ -1,0 +1,16 @@
+*{
+  margin: 0px;
+  padding: 0px;
+}
+
+#conversation{
+  background: white;
+}
+
+.client{
+  color:black;
+}
+
+.server{
+  color:grey;
+}
