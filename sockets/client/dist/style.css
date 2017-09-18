@@ -1,16 +1,95 @@
 *{
   margin: 0px;
   padding: 0px;
+  font-family: Helvetica, Arial, sans-serif
+}
+
+input{
+  padding: 10px;
+  border-radius: 2px;
+  width: 200px;
+  border: 1px solid #dad7d7;
+}
+
+input:focus{
+  outline: none;
+}
+
+button{
+  padding: 10px;
+}
+
+button:focus{
+  outline: none;
+}
+
+#dialog{
+  display: none;
 }
 
 #conversation{
   background: white;
+  position: absolute;
+  bottom: 10vh;
+  width: 100%;
+  text-align: center;
+}
+
+#input_area{
+  position: absolute;
+  bottom: 2vh;
+  width: 100%;
+  text-align: center;
+}
+
+#displayusername{
+  text-align: center;
+  margin: 5vh 0px 0px 0px;
+}
+
+#displaydate{
+  text-align: center;
+  margin: 0px;
+  font-size: 10px;
+}
+
+#intro{
+  text-align: center;
+  margin: 20vh 0px;
+}
+
+#msg{
+  width: 300px;
+}
+
+#title{
+  margin: 0px 0px 4vh 0px;
+  color: #5d5656;
+}
+
+#start{
+  display: block;
+  margin: 2vh auto;
+}
+
+.bubble{
+  font-size: 12px;
 }
 
 .client{
-  color:black;
+  display: inline-block;
+  margin: 0px 10px 10px 350px;
+  background: rgb(56,162,242);
+  color: white;
+  padding: 8px;
+  border-radius: 10px;
 }
 
 .server{
-  color:grey;
+  color: #101010;
+  background: rgb(229,229,234);
+  display: inline-block;
+  padding: 8px;
+  border-radius: 10px;
+  margin: 0px 10px 10px -350px;
 }

@@ -12,11 +12,25 @@
 
 <body>
 
-  <input type="text" name="msg" id="msg" value="hello">
-  <button id="sendMsg">Send</button>
-  <div id="conversation">
-
+  <div id="intro">
+    <h2 id="title">
+      Talk with the you who is 24 hours ahead of you
+    </h2>
+    <input type="text" name="username" id="username" placeholder="Your Name">
+    <button id="start">Start talking to you</button>
   </div>
+
+  <div id="dialog">
+    <div id="displayusername"></div>
+    <div id="displaydate"></div>
+    <div id="input_area">
+      <input type="text" name="msg" id="msg" placeholder="Type a message for you">
+      <!-- <button id="sendMsg">Send</button> -->
+    </div>
+
+    <div id="conversation"></div>
+  </div>
+
   <script src="bundle.js"></script>
 </body>
 
