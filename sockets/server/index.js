@@ -18,7 +18,7 @@ const apiai = require('apiai');
 const path = require('path');
 const keys = require('./../keys/index');
 let agent = apiai(keys.apiai);
-const PORT = 8080;
+const PORT = 3000;
 
 app.use(express.static(__dirname + '/public/'));
 
