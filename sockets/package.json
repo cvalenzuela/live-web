@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "browserify client/index.js -o client/dist/bundle.js",
+    "build": "browserify client/index.js -o server/public/bundle.js",
     "server": "node server/index.js",
     "develop:server": "nodemon server/index.js",
-    "develop:client": "watchify client/index.js -o client/dist/bundle.js"
+    "develop:client": "watchify client/index.js -o server/public/bundle.js"
   },
   "author": "Cristobal Valenzuela <cvalenzuela@nyu.edu> (https://github.com/cvalenzuela)",
   "license": "ISC",

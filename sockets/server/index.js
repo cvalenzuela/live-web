@@ -10,14 +10,21 @@ cv965@nyu.edu
 =================
 */
 
-const app = require('express')();
+const express = require('express');
+const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const apiai = require('apiai');
+const path = require('path');
 const keys = require('./../keys/index');
 let agent = apiai(keys.apiai);
 
 server.listen(3030);
+app.use(express.static(__dirname + '/public/'));
+
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/public/index.html');
+});
 
 io.on('connection', (socket) => {
   console.log('New client with id=', socket.id);
