@@ -54,5 +54,9 @@ let getResponse = (socket, data) => {
   request.end();
 }
 
-server.listen(PORT);
-console.log('Server started on port', PORT)
+server.listen(PORT, () => {
+  let host = server.address().address;
+  let port = server.address().port;
+  console.log('running at http://' + host + ':' + port)
+});
+
