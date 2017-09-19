@@ -18,8 +18,8 @@ const apiai = require('apiai');
 const path = require('path');
 const keys = require('./../keys/index');
 let agent = apiai(keys.apiai);
+const PORT = 8080;
 
-server.listen(3030);
 app.use(express.static(__dirname + '/public/'));
 
 app.get('/', function (req, res) {
@@ -53,3 +53,6 @@ let getResponse = (socket, data) => {
 
   request.end();
 }
+
+server.listen(PORT);
+console.log('Server started on port', PORT)
