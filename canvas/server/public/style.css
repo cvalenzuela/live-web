@@ -1,0 +1,13 @@
+*{
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#ranking{
+  position: absolute;
+  background: #cccccc;
+  bottom: 5vh;
+  left: 5vh;
+  padding: 4px;
+}

@@ -1,0 +1,27 @@
+{
+  "name": "canvas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:client": "browserify client/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > server/public/bundle.js ",
+    "watch:client": "watchify client/index.js --outfile server/public/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "build:server": "babel server/ -d server/",
+    "watch:server": "babel-watch server/"
+  },
+  "author": "Cristobal Valenzuela <cvalenzuela@nyu.edu> (https://github.com/cvalenzuela)",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-preset-es2015": "6.24.1",
+    "babel-watch": "2.0.7",
+    "babelify": "7.3.0",
+    "browserify": "14.4.0",
+    "uglifyify": "4.0.4",
+    "watchify": "3.9.0"
+  },
+  "dependencies": {
+    "express": "4.15.5",
+    "socket.io": "2.0.3"
+  }
+}
