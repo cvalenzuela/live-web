@@ -4,7 +4,7 @@
 const io = require('socket.io-client');
 import * as canvas from './canvas';
 
-const SERVER = 'http://localhost:3000'
+const SERVER = 'http://165.227.188.111:5555/'
 
 const socket = io.connect(SERVER, { query: canvas.getWindowSize() });
 
