@@ -6,9 +6,9 @@ let sizes = {};
 let totalSize = {
   width: 0,
   height: 0
-}
+};
 
-module.exports = (socket) => {
+module.exports = socket => {
   let clientCanvas = {};
 
   let getTotalSize = () => {
@@ -19,7 +19,7 @@ module.exports = (socket) => {
       sizes: sizes,
       yourSize: clientCanvas.width + clientCanvas.height
     };
-  }
+  };
 
   (() => {
     clients.add(socket.id);
@@ -36,13 +36,13 @@ module.exports = (socket) => {
     Total amount of clients: ${clients.size}
     --------
     `);
-    
+
     sizes[socket.id] = clientCanvas.width + clientCanvas.height;
     socket.emit('partitionCanvas', getTotalSize());
     socket.broadcast.emit('partitionCanvas', getTotalSize());
   })();
 
-  socket.on('resize', (data) => {
+  socket.on('resize', data => {
     totalSize.width -= clientCanvas.width;
     totalSize.height -= clientCanvas.height;
 
@@ -56,24 +56,21 @@ module.exports = (socket) => {
 
     socket.emit('partitionCanvas', getTotalSize());
     socket.broadcast.emit('partitionCanvas', getTotalSize());
-
-  })
+  });
 
   socket.on('disconnect', () => {
     console.log(`Client ${socket.id} has disconnected `);
     totalSize.width -= clientCanvas.width;
     totalSize.height -= clientCanvas.height;
-    
+
     try {
-      delete sizes[socket.id]
+      delete sizes[socket.id];
       clients.delete(socket.id);
     } catch (error) {
-      console.log('Something went wrong deleting the user')
+      console.log('Something went wrong deleting the user');
     }
 
     socket.emit('partitionCanvas', getTotalSize());
     socket.broadcast.emit('partitionCanvas', getTotalSize());
   });
-
-}
-
+};
