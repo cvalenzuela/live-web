@@ -1,0 +1,23 @@
+{
+  "name": "facemesh",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:client": "rollup --config rollup.client.config.js",
+    "watch:client": "yarn build:client -- -w",
+    "build:server": "rollup --config rollup.server.config.js",
+    "watch:server": "yarn build:server -- -w",
+    "develop": "concurrently --kill-others \"yarn watch:client\" \"yarn watch:server\" \"nodemon dist/server.js\" \"live-server dist/public/\"",
+    "build:all": "yarn build:client && yarn build:server"
+  },
+  "author": "Cristobal Valenzuela <cvalenzuela@nyu.edu> (https://github.com/cvalenzuela)",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "3.5.0",
+    "live-server": "1.2.0",
+    "nodemon": "1.12.1",
+    "rollup": "0.50.0",
+    "rollup-plugin-uglify": "2.0.1"
+  }
+}
