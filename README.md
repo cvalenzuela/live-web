@@ -5,3 +5,4 @@ This repo contains assignments for the Live Web class taught by Shawn Van Every 
 - [Self Portrait](/portrait)
 - [Talk with the you who is 24 hours ahead of you](/chatapp)
 - [Socket-Canvas-Rectangle-Screen-Game](/canvas)
+- [Facemesh](/facemesh)
