@@ -11,17 +11,14 @@
 </head>
 
 <body>
-  <!-- <video id="video" width="320" height="240" preload autoplay loop muted></video> -->
-  <!-- <canvas id="canvas" width="320" height="240"></canvas> -->
+
+  <video id="videoCamera" muted loop width="256" height="256"></video>
+  <canvas id="videoCanvas" width="256" height="256"></canvas>
+  <canvas id="faceCanvas" width="320" height="240"></canvas>
+  <div id="webglCanvas"></div>
 
   <p id="error"></p>
-
-  <video id="videoCamera" autoplay width="256" height="256" style="visibility: hidden; float:left;"></video>
-  <canvas id="videoCanvas" width="256" height="256" style="visibility: hidden; float:left;"></canvas>
-
   <h2 id="clientsConnected">We have <span id=clients>0</span> <span id='users'>user</span> </h2>
-
-  <div id="webglCanvas"></div>
 
   <script src="bundle.js"></script>
 

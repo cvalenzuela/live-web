@@ -19,3 +19,17 @@
     top: 0px;
     overflow: hidden;
 }
+
+#videoCamera {
+    visibility: hidden;
+    float: left;
+}
+
+#videoCanvas {
+    visibility: hidden;
+    float: left;
+}
+
+#faceCanvas{
+    display: none;
+}

@@ -19,6 +19,7 @@ let videoCamera, videoCanvas, videoImageCtx, videoTexture, movieGeometry;
 let count = 0;
 let mesh = new THREE.Object3D();
 let materials = [];
+let rotationAmount = { x: 0, y: 0 };
 
 let init = (_videoCamera, _videoCanvas, webglcanvas) => {
   videoCamera = _videoCamera;
@@ -51,6 +52,7 @@ let init = (_videoCamera, _videoCanvas, webglcanvas) => {
 
   // Events
   resize(renderer, camera);
+  window.addEventListener("click", pingTheMesh);
 
   // Stats
   // stats = new Stats();
@@ -98,25 +100,15 @@ let init = (_videoCamera, _videoCanvas, webglcanvas) => {
   scene.add(mesh);
   camera.lookAt(movieScreen.position);
 
-  // Tween Animations
-  window.addEventListener("click", () => {
-    tween = new TWEEN.Tween(scale).to({ x: 1.16, y: 1.16, z: 1.16 }, 300).easing(TWEEN.Easing.Quadratic.Out);
-    tween.start();
-
-    window.setTimeout(() => {
-      tween = new TWEEN.Tween(scale).to({ x: 1, y: 1, z: 1 }, 300).easing(TWEEN.Easing.Quadratic.Out);
-      tween.start();
-    }, 300);
-  });
+  let cameraReady = videoCamera.currentTime > 0 && !videoCamera.paused && !videoCamera.ended && videoCamera.readyState > 2;
+  cameraReady && videoCamera.play();
 
   animate();
 }
 
 let update = () => {
   // stats.update();
-
   TWEEN.update();
-  videoCamera.play();
   controls.update();
 
   for (var i = 0, l = movieGeometry.vertices.length; i < l; i++) {
@@ -128,12 +120,14 @@ let update = () => {
 
   count += 0.009;
 
+  // Scale the mesh
   mesh.scale.x = scale.x;
   mesh.scale.y = scale.y;
   mesh.scale.z = scale.z;
 
-  mesh.rotation.x += 0.0025;
-  mesh.rotation.z += 0.003;
+  // Rotate the mesh
+  mesh.rotation.x += rotationAmount.x;
+  mesh.rotation.z += rotationAmount.y;
 
   movieGeometry.verticesNeedUpdate = true;
 }
@@ -155,4 +149,18 @@ let render = () => {
   renderer.render(scene, camera);
 }
 
-export { init }
+// Tween Animations
+let pingTheMesh = () => {
+  let scale2x = new TWEEN.Tween(scale).to({ x: 2, y: 2, z: 2 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
+  setTimeout(() => {
+    let scale1x = new TWEEN.Tween(scale).to({ x: 1, y: 1, z: 1 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
+  }, 300);
+};
+
+let updateMesh = newData => {
+  console.log(newData);
+  rotationAmount.x = newData.x;
+  rotationAmount.y = newData.y;
+}
+
+export { init, pingTheMesh, updateMesh }
