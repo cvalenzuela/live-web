@@ -3,7 +3,7 @@
 Node chat app usign api.ai, sockets and express
 
 ### Live Demo
-[Demo 1 (digitalocean)](http://165.227.188.111:3000/)
+[Demo 1 (digitalocean)](http://165.227.188.111:7788/)
 
 [Demo 2 (aws)](http://ec2-54-200-158-87.us-west-2.compute.amazonaws.com:3000/)
 

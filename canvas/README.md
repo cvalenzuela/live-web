@@ -1,6 +1,7 @@
 # A Socket-Canvas-Rectangle-Screen-Game
 
-[Play it here!](http://165.227.188.111:5555/)
+To play, just resize your window.
+[Play it here!](http://165.227.188.111:9898/)
 
 Client
 ```
