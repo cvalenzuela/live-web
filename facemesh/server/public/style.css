@@ -21,15 +21,20 @@
 }
 
 #videoCamera {
-    visibility: hidden;
+    position: absolute;
+    bottom: 2px;
+    right: 10px;
     float: left;
+    z-index: 50;
 }
 
-#videoCanvas {
-    visibility: hidden;
-    float: left;
+#faceCanvas {
+    position: absolute;
+    bottom: 2px;
+    right: 10px;
+    z-index: 100;
 }
 
-#faceCanvas{
+#videoCanvas{
     display: none;
 }

@@ -2,13 +2,28 @@
 Server
 */
 
+const fs = require('fs');
+const credentials = {
+  key: fs.readFileSync('./private/my-key.pem'),
+  cert: fs.readFileSync('./private/my-cert.pem')
+};
+
 const express = require('express');
 const app = express();
-const server = require('http').Server(app);
+let server;
+
+if(process.env.PROD){
+  console.log('Starting production server with https');
+  server = require('https').Server(credentials, app);
+} else {
+  console.log('Development server without https');
+  server = require('http').Server(app);
+}
+
 const io = require('socket.io')(server);
 const path = require('path');
 const handleSocket = require('./handleSockets');
-const PORT = 3000;
+const PORT = process.env.PORT || 8765;
 
 app.use(express.static(__dirname + '/public/'));
 

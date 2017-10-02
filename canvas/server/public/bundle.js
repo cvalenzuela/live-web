@@ -54,12 +54,11 @@
     Object.defineProperty(exports, "__esModule", { value: !0 }), exports.emitNewSize = exports.init = void 0;var canvas = function (obj) {
       if (obj && obj.__esModule) return obj;var newObj = {};if (null != obj) for (var key in obj) Object.prototype.hasOwnProperty.call(obj, key) && (newObj[key] = obj[key]);return newObj.default = obj, newObj;
     }(require("./canvas")),
-        SERVER = "http://localhost:3000",
-        socket = require("socket.io-client").connect(SERVER, { query: canvas.getWindowSize() });socket.on("partitionCanvas", function (data) {
+        socket = require("socket.io-client").connect(":9898", { query: canvas.getWindowSize() });socket.on("partitionCanvas", function (data) {
       canvas.partitionCanvas(data);
     }), exports.init = function () {
       socket.on("connect", function () {
-        console.log("Connected to", SERVER);
+        console.log("Connected to server on port :9898");
       });
     }, exports.emitNewSize = function () {
       socket.emit("resize", canvas.getWindowSize());

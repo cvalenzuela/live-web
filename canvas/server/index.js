@@ -14,7 +14,7 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const path = require('path');
 const handleSocket = require('./socket');
-const PORT = 3000;
+const PORT = process.env.PORT || 9898;
 
 app.use(express.static(__dirname + '/public/'));
 

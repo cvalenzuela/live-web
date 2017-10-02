@@ -12,7 +12,6 @@ var io = require('socket.io-client'); // Client
 // Socket
 // ======
 
-var SERVER = 'localhost:3000';
 var socket = void 0,
     clientsElement = void 0,
     users = void 0;
@@ -21,7 +20,7 @@ var socket = void 0,
 var init = function init() {
   clientsElement = document.getElementById('clients');
   users = document.getElementById('users');
-  socket = io.connect(SERVER, { query: 'test' });
+  socket = io.connect(':3000', { query: 'test' });
   startListening();
 };
 
@@ -29,7 +28,7 @@ var init = function init() {
 var startListening = function startListening() {
   // Connection established
   socket.on('connect', function () {
-    console.log("Connected to", SERVER);
+    console.log("Connected to server");
   });
 
   // Update number of clients connected
@@ -254,7 +253,7 @@ var update = function update() {
   mesh.scale.z = scale.z;
 
   // Rotate the mesh
-  mesh.rotation.x += rotationAmount.x;
+  mesh.rotation.y += rotationAmount.x;
   mesh.rotation.z += rotationAmount.y;
 
   movieGeometry.verticesNeedUpdate = true;
@@ -330,10 +329,11 @@ var trackFace = function trackFace(canvas) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     event.data.forEach(function (rect) {
       if (new Date().getSeconds() % 2 == 0) {
-        var scalePos = { x: scale(rect.x, 160, 20, -0.0025, 0.0025), y: scale(rect.y, 160, 20, -0.0025, 0.0025) };
+        var scalePos = { x: scale(rect.x, 160, 20, -0.01, 0.01), y: scale(rect.y, 160, 20, -0.01, 0.01) };
         (0, _handleSocket.emitFacePosition)(scalePos);
       }
-      //debugFace(context, rect)
+      context.strokeStyle = '#ff0000';
+      context.strokeRect(rect.x, rect.y, rect.width, rect.height);
     });
   });
 };
@@ -341,17 +341,6 @@ var trackFace = function trackFace(canvas) {
 // Let scale a number between range
 var scale = function scale(input, in_min, in_max, out_min, out_max) {
   return (input - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-};
-
-// Draw on debug canvas
-var debugFace = function debugFace(context, data) {
-  console.log(data);
-  context.strokeStyle = '#ff0000';
-  context.strokeRect(data.x, data.y, data.width, data.height);
-  context.font = '11px Helvetica';
-  context.fillStyle = "#fff";
-  context.fillText('x: ' + data.x + 'px', data.x + data.width + 5, data.y + 11);
-  context.fillText('y: ' + data.y + 'px', data.x + data.width + 5, data.y + 22);
 };
 
 exports.init = init;

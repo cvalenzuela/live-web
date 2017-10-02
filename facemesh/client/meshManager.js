@@ -126,7 +126,7 @@ let update = () => {
   mesh.scale.z = scale.z;
 
   // Rotate the mesh
-  mesh.rotation.x += rotationAmount.x;
+  mesh.rotation.y += rotationAmount.x;
   mesh.rotation.z += rotationAmount.y;
 
   movieGeometry.verticesNeedUpdate = true;

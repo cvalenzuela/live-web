@@ -9,11 +9,9 @@ Cristóbal Valenzuela
 cv965@nyu.edu
 =================
 */
-
-const SERVER = 'http://localhost:3030'
-
+let PORT = ':7788';
 const io = require('socket.io-client');
-const socket = io.connect(SERVER);
+const socket = io.connect(PORT);
 
 window.onload = () => {
   let msg = document.getElementById('msg');
@@ -38,7 +36,7 @@ window.onload = () => {
 }
 
 socket.on('connect', () => {
-  console.log("Connected to", SERVER);
+  console.log("Connected to server to port: " + PORT);
 });
 
 socket.on('chatmessage', (data) => {

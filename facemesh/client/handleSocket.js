@@ -5,14 +5,13 @@
 import { pingTheMesh, updateMesh } from './meshManager';
 const io = require('socket.io-client');
 
-const SERVER = 'localhost:3000'
 let socket, clientsElement, users;
 
 // Init the Socket communication
 let init = () => {
   clientsElement = document.getElementById('clients');
   users = document.getElementById('users');
-  socket = io.connect(SERVER, { query: 'test' });
+  socket = io.connect(':8765', { query: 'test' });
   startListening();
 }
 
@@ -20,7 +19,7 @@ let init = () => {
 let startListening = () =>  {
   // Connection established
   socket.on('connect', () => {
-    console.log("Connected to", SERVER);
+    console.log("Connected to server");
   });
 
   // Update number of clients connected
