@@ -1,0 +1,21 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+#clientsConnected {
+    z-index: 999;
+    padding: 0;
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+}
+
+#webglCanvas {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
