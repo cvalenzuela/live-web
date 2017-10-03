@@ -2,13 +2,12 @@
 // Track user face
 // -------
 
-import { emitFacePosition } from './handleSocket';
-
 require('tracking');
 require('tracking/build/data/face');
 
 let tracker;
 let time = new Date;
+let userPos;
 
 // Init the tracker
 let init = (video, canvas) => {
@@ -26,19 +25,26 @@ let trackFace = (canvas) => {
   tracker.on('track', (event) => {
     context.clearRect(0, 0, canvas.width, canvas.height);
     event.data.forEach((rect) => {
-      if ((new Date).getSeconds() % 2 == 0) {
-        let scalePos = { x: scale(rect.x, 160, 20, -0.01, 0.01), y: scale(rect.y, 160, 20, -0.01, 0.01) }
-        emitFacePosition(scalePos);
-      }
+      userPos = rect;
       context.strokeStyle = '#ff0000';
       context.strokeRect(rect.x, rect.y, rect.width, rect.height);
     });
   });
 }
 
+// Get User Face position
+let userFacePos = () => {
+  if(userPos){
+    return { y: mapNumber(userPos.y, 0, 150, 1.0, -1.5) };
+  } else {
+    return { y: 0 };
+  }
+}
+
 // Let scale a number between range
-let scale = (input, in_min, in_max, out_min, out_max) => {
+let mapNumber = (input, in_min, in_max, out_min, out_max) => {
   return (input - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-export { init }
+
+export { init, userFacePos }

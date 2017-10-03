@@ -3,23 +3,31 @@
 // ======
 
 import { pingTheMesh, updateMesh } from './meshManager';
+import * as meshManager from './meshManager';
+
 const io = require('socket.io-client');
 
 let socket, clientsElement, users;
 
 // Init the Socket communication
-let init = () => {
+let init = (webglcanvas) => {
   clientsElement = document.getElementById('clients');
   users = document.getElementById('users');
   socket = io.connect(':8765', { query: 'test' });
-  startListening();
+  startListening(webglcanvas);
 }
 
 // Listeners
-let startListening = () =>  {
+let startListening = (webglcanvas) =>  {
+
   // Connection established
   socket.on('connect', () => {
     console.log("Connected to server");
+  });
+
+  // Start the mesh
+  socket.on('startMesh', clientNumber => {
+    meshManager.init(webglcanvas, clientNumber);
   });
 
   // Update number of clients connected
@@ -30,14 +38,14 @@ let startListening = () =>  {
   });
 
   // Update the faces data from all connected clients
-  socket.on('updateFaceData', data => {
-    updateMesh(data);
+  socket.on('updateFaceData', clients => {
+    updateMesh(clients);
   });
 }
 
 // Emiters
-let emitFacePosition = data => {
-  socket.emit('clientFacePosition', data)
+let emitFacePosition = facePosition => {
+  socket.emit('clientFacePosition', facePosition)
 };
 
 

@@ -2,51 +2,44 @@
 // Socket
 // ======
 
-let clients = new Set();
-let meshPosition = { x: 0, y: 0};
+let clients = {};
+let amountOfClients = [];
 
 module.exports = socket => {
-  let previousClientPosition = { x: 0, y: 0};
+
   // Client connects
   (() => {
-    clients.add(socket.id);
+    amountOfClients.push(socket.id);
+    clients[socket.id] = {number: amountOfClients.indexOf(socket.id)};
     consoleMsgs.newClient(socket.id);
-    socket.emit('updateClients', clients.size);
-    socket.broadcast.emit('updateClients', clients.size);
 
+    socket.emit('startMesh', amountOfClients.indexOf(socket.id));
+
+    socket.emit('updateClients', amountOfClients.length);
+    socket.broadcast.emit('updateClients', amountOfClients.length);
   })();
 
   // Client Disconnects
   socket.on('disconnect', () => {
     try {
-      clients.delete(socket.id);
+      delete clients[socket.id];
+      let index = amountOfClients.indexOf(socket.id);
+      index > -1 && amountOfClients.splice(index, 1);
       consoleMsgs.dropClient(socket.id);
     } catch (error) {
       consoleMsgs.error('deleting the user');
     }
 
-    socket.emit('updateClients', clients.size);
-    socket.broadcast.emit('updateClients', clients.size);
+    socket.emit('updateClients', amountOfClients.length);
+    socket.broadcast.emit('updateClients', amountOfClients.length);
   });
 
   // Client Sends Face Position
   socket.on('clientFacePosition', clientFacePosition => {
-
-    meshPosition.x -= previousClientPosition.x;
-    meshPosition.y -= previousClientPosition.y;
-
-    meshPosition.x += clientFacePosition.x;
-    meshPosition.y += clientFacePosition.y;
-
-    previousClientPosition = clientFacePosition;
-
-    let position = {
-      x: meshPosition.x / clients.size,
-      y: meshPosition.y / clients.size,
-    }
-
-    socket.emit('updateFaceData', position);
-    socket.broadcast.emit('updateFaceData', position);
+    clients[socket.id].pos = clientFacePosition;
+  
+    socket.emit('updateFaceData', clients);
+    socket.broadcast.emit('updateFaceData', clients);
   });
 
 };
@@ -56,7 +49,7 @@ let consoleMsgs = {
     console.log(`
     --------
     New client: ${id}
-    Total amount of clients: ${clients.size}
+    Total amount of clients: ${amountOfClients.length}
     --------
     `);
   },
@@ -64,7 +57,7 @@ let consoleMsgs = {
     console.log(`
     --------
     Client ${id} has disconnected 
-    Total amount of clients: ${clients.size}
+    Total amount of clients: ${amountOfClients.length}
     --------`);
   },
   error: (err) => {

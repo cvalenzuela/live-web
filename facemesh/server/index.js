@@ -7,7 +7,6 @@ const credentials = {
   key: fs.readFileSync('./private/my-key.pem'),
   cert: fs.readFileSync('./private/my-cert.pem')
 };
-
 const express = require('express');
 const app = express();
 let server;

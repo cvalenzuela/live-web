@@ -9,21 +9,27 @@ import * as Stats from './utils/stats';
 import * as trackBallControls from './utils/TrackballControls';
 import { resize } from './utils/manageWindowResize';
 import * as geometry from './utils/geometry';
+import './utils/ExplodeModifier';
+
+import { emitFacePosition } from './handleSocket';
+import { userFacePos } from './trackFace';
 
 let scale = { x: 1, y: 1, z: 1 };
 let tween = new TWEEN.Tween(scale);
 
 let scene, camera, renderer, controls, stats;
-let videoCamera, videoCanvas, videoImageCtx, videoTexture, movieGeometry;
+let facesGeometry, mesh;
 
-let count = 0;
-let mesh = new THREE.Object3D();
-let materials = [];
 let rotationAmount = { x: 0, y: 0 };
+let offsetY = 0;
+let materials = [];
+let y;
 
-let init = (_videoCamera, _videoCanvas, webglcanvas) => {
-  videoCamera = _videoCamera;
-  videoCanvas = _videoCanvas;
+let userId;
+let currentPos = 1, previousPos = 0;
+
+let init = (webglcanvas, clientNumber) => {
+  userId = clientNumber;
 
   // Scene
   scene = new THREE.Scene();
@@ -54,55 +60,31 @@ let init = (_videoCamera, _videoCanvas, webglcanvas) => {
   resize(renderer, camera);
   window.addEventListener("click", pingTheMesh);
 
-  // Stats
-  // stats = new Stats();
-  // stats.domElement.style.position = 'absolute';
-  // stats.domElement.style.bottom = '0px';
-  // stats.domElement.style.zIndex = 100;
-  // webglcanvas.appendChild( stats.domElement );
-
   // Lights
-  var light = new THREE.DirectionalLight(0xffffff, 0.3);
+  let light = new THREE.DirectionalLight(0xffffff, 0.3);
   scene.add(light);
-
-  var ambientLight = new THREE.AmbientLight(0xffffff);
+  let ambientLight = new THREE.AmbientLight(0xffffff);
   scene.add(ambientLight);
 
-  // VideoCanvas and videoTexture
-  videoCanvas.style.filter = "grayscale(100%)";
-  videoImageCtx = videoCanvas.getContext('2d');
-  videoImageCtx.fillStyle = '#fff'; // background color if no video present
-  videoImageCtx.fillRect(0, 0, videoCanvas.width, videoCanvas.height);
+  facesGeometry = new THREE.SphereGeometry(40, 7, 7, 0, 6.3, 0, 3.1);
+  let material = new THREE.MeshBasicMaterial({ color: '#ffffff' });
 
-  videoTexture = new THREE.Texture(videoCanvas);
-  videoTexture.wrapS = videoTexture.wrapT = THREE.RepeatWrapping;
-  videoTexture.offset.set(0, 0);
-  videoTexture.repeat.set(20, 20);
-  videoTexture.minFilter = THREE.LinearFilter;
-  videoTexture.magFilter = THREE.LinearFilter;
+  // Explode Modifier
+  let explodeModifier = new THREE.ExplodeModifier();
+  explodeModifier.modify(facesGeometry);
 
-  movieGeometry = new THREE.SphereGeometry(40, 5, 2, 0, 6.3, 0, 3.1);
-  for (var i = 0; i < movieGeometry.faces.length; i++) {
-    materials.push(new THREE.MeshPhongMaterial({
-      map: videoTexture,
-      overdraw: true,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.8
-    }));
+  let clientFaceInMesh = new THREE.MeshBasicMaterial({ color: '#ff0000' });
+  for (let i = 0; i < facesGeometry.faces.length; i++) {
+    materials.push(new THREE.MeshBasicMaterial({ color: '#ffffff' }));
+  }
+  for (let i = 0; i < facesGeometry.faces.length; i++) {
+    facesGeometry.faces[i].materialIndex = i;
   }
 
-  let movieScreen = new THREE.Mesh(movieGeometry, materials);
-  for (var i = 0; i < movieGeometry.faces.length; i++) {
-    movieGeometry.faces[i].materialIndex = i;
-  }
-  mesh.add(movieScreen);
+  materials[userId] = clientFaceInMesh;
+  mesh = new THREE.Mesh(facesGeometry, materials);
   scene.add(mesh);
-  camera.lookAt(movieScreen.position);
-
-  let cameraReady = videoCamera.currentTime > 0 && !videoCamera.paused && !videoCamera.ended && videoCamera.readyState > 2;
-  cameraReady && videoCamera.play();
-
+  camera.lookAt(mesh.position);
   animate();
 }
 
@@ -111,14 +93,16 @@ let update = () => {
   TWEEN.update();
   controls.update();
 
-  for (var i = 0, l = movieGeometry.vertices.length; i < l; i++) {
-    movieGeometry.vertices[i].y += Math.cos(((i / 5 + count) * 0.2) * 70) / 3;
-  }
-  for (var i = 0, l = movieGeometry.vertices.length; i < l; i++) {
-    movieGeometry.vertices[i].z += Math.cos(((i / 5 + count) * 0.2) * 30) / 6;
-  }
+  let offsetY = userFacePos();
 
-  count += 0.009;
+  //y = facesGeometry.vertices[THREE.Math.randInt(userId * 3, userId * 3 + 2)].y;
+  // y < -1 && (offsetY.y = 0);
+  //facesGeometry.vertices[THREE.Math.randInt(userId * 3, userId * 3 + 2)].y += offsetY.y;
+  //y = facesGeometry.vertices[THREE.Math.randInt(userId * 3, userId * 3 + 2)].y;
+
+  if ((new Date).getSeconds() % 2 == 0) {
+    emitFacePosition(offsetY);
+  } 
 
   // Scale the mesh
   mesh.scale.x = scale.x;
@@ -126,10 +110,10 @@ let update = () => {
   mesh.scale.z = scale.z;
 
   // Rotate the mesh
-  mesh.rotation.y += rotationAmount.x;
-  mesh.rotation.z += rotationAmount.y;
+  //mesh.rotation.y += rotationAmount.y;
+  //mesh.rotation.z += rotationAmount.y;
 
-  movieGeometry.verticesNeedUpdate = true;
+  facesGeometry.verticesNeedUpdate = true;
 }
 
 let animate = () => {
@@ -139,28 +123,23 @@ let animate = () => {
 }
 
 let render = () => {
-  //USE FETCHED DATA TO APPLY TEXTURE HERE:
-  // materials[5] = new THREE.MeshBasicMaterial({color: 0x7d89be});
-  if (videoCamera.readyState === videoCamera.HAVE_ENOUGH_DATA) {
-    videoImageCtx.drawImage(videoCamera, 0, 0, videoCanvas.width, videoCanvas.height);
-    if (videoTexture)
-      videoTexture.needsUpdate = true;
-  }
   renderer.render(scene, camera);
 }
 
 // Tween Animations
 let pingTheMesh = () => {
-  let scale2x = new TWEEN.Tween(scale).to({ x: 2, y: 2, z: 2 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
-  setTimeout(() => {
-    let scale1x = new TWEEN.Tween(scale).to({ x: 1, y: 1, z: 1 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
-  }, 300);
+  // let scale2x = new TWEEN.Tween(scale).to({ x: 1.5, y: 1.5, z: 1.5 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
+  // setTimeout(() => {
+  //   let scale1x = new TWEEN.Tween(scale).to({ x: 1, y: 1, z: 1 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
+  // }, 300);
 };
 
-let updateMesh = newData => {
-  console.log(newData);
-  rotationAmount.x = newData.x;
-  rotationAmount.y = newData.y;
+let updateMesh = clients => {
+  for(let client in clients){
+    console.log(clients[client].pos.y);
+    facesGeometry.vertices[THREE.Math.randInt(clients[client].number * 3, clients[client].number * 3 + 2)].y += clients[client].pos.y;
+  }
+  //facesGeometry.verticesNeedUpdate = true
 }
 
 export { init, pingTheMesh, updateMesh }
