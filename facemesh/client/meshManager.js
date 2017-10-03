@@ -20,13 +20,13 @@ let tween = new TWEEN.Tween(scale);
 let scene, camera, renderer, controls, stats;
 let facesGeometry, mesh;
 
-let rotationAmount = { x: 0, y: 0 };
 let offsetY = 0;
 let materials = [];
 let y;
 
+let currentPos = 1,
+  previousPos = 0;
 let userId;
-let currentPos = 1, previousPos = 0;
 
 let init = (webglcanvas, clientNumber) => {
   userId = clientNumber;
@@ -49,6 +49,8 @@ let init = (webglcanvas, clientNumber) => {
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0xf2b40e);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   webglcanvas.appendChild(renderer.domElement);
 
   // Controls
@@ -58,24 +60,27 @@ let init = (webglcanvas, clientNumber) => {
 
   // Events
   resize(renderer, camera);
-  window.addEventListener("click", pingTheMesh);
 
   // Lights
   let light = new THREE.DirectionalLight(0xffffff, 0.3);
+  light.castShadow = true;
+  light.position.set(1, 1, -1);
   scene.add(light);
   let ambientLight = new THREE.AmbientLight(0xffffff);
   scene.add(ambientLight);
 
   facesGeometry = new THREE.SphereGeometry(40, 7, 7, 0, 6.3, 0, 3.1);
-  let material = new THREE.MeshBasicMaterial({ color: '#ffffff' });
 
   // Explode Modifier
   let explodeModifier = new THREE.ExplodeModifier();
   explodeModifier.modify(facesGeometry);
 
-  let clientFaceInMesh = new THREE.MeshBasicMaterial({ color: '#ff0000' });
+  let clientFaceInMesh = new THREE.MeshPhongMaterial({ color: '#ff4444' });
   for (let i = 0; i < facesGeometry.faces.length; i++) {
-    materials.push(new THREE.MeshBasicMaterial({ color: '#ffffff' }));
+    materials.push(new THREE.MeshPhongMaterial({
+      color: '#cacaca',
+      side: THREE.DoubleSide
+    }));
   }
   for (let i = 0; i < facesGeometry.faces.length; i++) {
     facesGeometry.faces[i].materialIndex = i;
@@ -83,6 +88,8 @@ let init = (webglcanvas, clientNumber) => {
 
   materials[userId] = clientFaceInMesh;
   mesh = new THREE.Mesh(facesGeometry, materials);
+  mesh.receiveShadow = true;
+  mesh.castShadow = true;
   scene.add(mesh);
   camera.lookAt(mesh.position);
   animate();
@@ -94,24 +101,19 @@ let update = () => {
   controls.update();
 
   let offsetY = userFacePos();
-
-  //y = facesGeometry.vertices[THREE.Math.randInt(userId * 3, userId * 3 + 2)].y;
-  // y < -1 && (offsetY.y = 0);
-  //facesGeometry.vertices[THREE.Math.randInt(userId * 3, userId * 3 + 2)].y += offsetY.y;
-  //y = facesGeometry.vertices[THREE.Math.randInt(userId * 3, userId * 3 + 2)].y;
-
   // if ((new Date).getSeconds() % 2 == 0) {
   //   emitFacePosition(offsetY);
   // } 
   emitFacePosition(offsetY);
+
   // Scale the mesh
   mesh.scale.x = scale.x;
   mesh.scale.y = scale.y;
   mesh.scale.z = scale.z;
 
   // Rotate the mesh
-  //mesh.rotation.y += rotationAmount.y;
-  //mesh.rotation.z += rotationAmount.y;
+  mesh.rotation.y += 0.001;
+  mesh.rotation.z += 0.001;
 
   facesGeometry.verticesNeedUpdate = true;
 }
@@ -136,8 +138,22 @@ let pingTheMesh = () => {
 
 let updateMesh = clients => {
   try {
-    for(let client in clients){
-      facesGeometry.vertices[THREE.Math.randInt(clients[client].number * 3, clients[client].number * 3 + 2)].y += clients[client].pos.y;
+    for (let client in clients) {
+      if (clients[client].pos) {
+        let delta = clients[client].pos.y;
+        let currentFacePos = facesGeometry.vertices[THREE.Math.randInt(clients[client].number * 3, clients[client].number * 3 + 2)].y;
+
+        if (currentFacePos < 80 && currentFacePos > 20 && delta > 0) {
+          facesGeometry.vertices[clients[client].number * 3].y += delta;
+          facesGeometry.vertices[clients[client].number * 3 + 1].y += delta;
+          facesGeometry.vertices[clients[client].number * 3 + 2].y += delta;
+        }
+        if (currentFacePos > 40 && delta < 0) {
+          facesGeometry.vertices[clients[client].number * 3].y += delta;
+          facesGeometry.vertices[clients[client].number * 3 + 1].y += delta;
+          facesGeometry.vertices[clients[client].number * 3 + 2].y += delta;
+        }
+      }
     }
   } catch (error) {
     console.log(error)

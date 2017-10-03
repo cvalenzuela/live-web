@@ -5,7 +5,7 @@
 let clients = {};
 let amountOfClients = [];
 
-module.exports = socket => {
+module.exports = (io, socket) => {
 
   // Client connects
   (() => {
@@ -29,7 +29,6 @@ module.exports = socket => {
     } catch (error) {
       consoleMsgs.error('deleting the user');
     }
-
     socket.emit('updateClients', amountOfClients.length);
     socket.broadcast.emit('updateClients', amountOfClients.length);
   });

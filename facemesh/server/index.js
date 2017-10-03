@@ -30,8 +30,8 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-io.on('connection', socket => {
-  handleSocket(socket);
+io.on('connection', (socket) => {
+  handleSocket(io, socket);
 });
 
 server.listen(PORT, () => {
