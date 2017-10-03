@@ -13,6 +13,7 @@ body{
     position: absolute;
     left: 2vw;
     top: 2vh;
+    z-index: 999999;
 }
 
 #instructions{

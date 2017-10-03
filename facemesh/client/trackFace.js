@@ -35,7 +35,7 @@ let trackFace = (canvas) => {
 // Get User Face position
 let userFacePos = () => {
   if(userPos){
-    return { y: mapNumber(userPos.y, 0, 150, 1.0, -1.5) };
+    return { y: mapNumber(userPos.y, 0, 150, 0.5, -0.5) };
   } else {
     return { y: 0 };
   }

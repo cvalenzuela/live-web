@@ -23,6 +23,7 @@ let facesGeometry, mesh;
 let offsetY = 0;
 let materials = [];
 let y;
+let container = new THREE.Object3D();
 
 let currentPos = 1,
   previousPos = 0;
@@ -48,7 +49,7 @@ let init = (webglcanvas, clientNumber) => {
     renderer = new THREE.CanvasRenderer();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0xf2b40e);
+  renderer.setClearColor('#f2b40e');
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   webglcanvas.appendChild(renderer.domElement);
@@ -76,6 +77,10 @@ let init = (webglcanvas, clientNumber) => {
   explodeModifier.modify(facesGeometry);
 
   let clientFaceInMesh = new THREE.MeshPhongMaterial({ color: '#ff4444' });
+  let wireMaterial = new THREE.MeshBasicMaterial({
+    color: '#666666',
+    wireframe: true
+  });
   for (let i = 0; i < facesGeometry.faces.length; i++) {
     materials.push(new THREE.MeshPhongMaterial({
       color: '#cacaca',
@@ -88,15 +93,17 @@ let init = (webglcanvas, clientNumber) => {
 
   materials[userId] = clientFaceInMesh;
   mesh = new THREE.Mesh(facesGeometry, materials);
+  let wireMesh = new THREE.Mesh(facesGeometry, wireMaterial);
+  container.add(mesh);
+  container.add(wireMesh);
   mesh.receiveShadow = true;
   mesh.castShadow = true;
-  scene.add(mesh);
+  scene.add(container);
   camera.lookAt(mesh.position);
   animate();
 }
 
 let update = () => {
-  // stats.update();
   TWEEN.update();
   controls.update();
 
@@ -107,13 +114,13 @@ let update = () => {
   emitFacePosition(offsetY);
 
   // Scale the mesh
-  mesh.scale.x = scale.x;
-  mesh.scale.y = scale.y;
-  mesh.scale.z = scale.z;
+  container.scale.x = scale.x;
+  container.scale.y = scale.y;
+  container.scale.z = scale.z;
 
   // Rotate the mesh
-  mesh.rotation.y += 0.001;
-  mesh.rotation.z += 0.001;
+  container.rotation.y += 0.001;
+  container.rotation.z += 0.001;
 
   facesGeometry.verticesNeedUpdate = true;
 }

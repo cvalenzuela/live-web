@@ -7,12 +7,11 @@ import * as meshManager from './meshManager';
 
 const io = require('socket.io-client');
 
-let socket, clientsElement, users;
+let socket, clientsElement;
 
 // Init the Socket communication
 let init = (webglcanvas) => {
   clientsElement = document.getElementById('clients');
-  users = document.getElementById('users');
   socket = io.connect(':8765', { query: 'test' });
   startListening(webglcanvas);
 }
@@ -32,7 +31,6 @@ let startListening = (webglcanvas) =>  {
 
   // Update number of clients connected
   socket.on('updateClients', clients => {
-    clients == 1 ? users.innerText = 'user' : users.innerText = 'users';
     clientsElement.innerText = clients;
     pingTheMesh();
   });
