@@ -12,14 +12,25 @@
 
 <body>
 
+  <div id="title">
+    <h1>FACEMASH</h1>
+    <h5>You are the <span>red</span> triangle</h5>
+    <h5>People in the world are the <i>other</i> triangles</h5>
+    <ul id='instructions'>
+      <li>-Allow your camera.</li> 
+      <li>-Move your head up and down to control your piece.</li> 
+      <li>-Chrome recommanded.</li> 
+    </ul>
+  </div>
+
   <video id="video" muted loop width="256" height="256"></video>
   <canvas id="faceCanvas" width="256" height="256"></canvas>
   <div id="webglCanvas"></div>
 
   <p id="error"></p>
-  <h2 id="clientsConnected">We have <span id=clients>0</span> <span id='users'>faces</span> </h2>
+  <h2 id="clientsConnected"><span id=clients>0</span> <span id='users'>faces connected</span> </h2>
 
-  <script src="bundle.js"></script>
+  <!-- <script src="bundle.js"></script> -->
 
 </body>
 

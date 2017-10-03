@@ -5,6 +5,35 @@
     font-family: 'Roboto', sans-serif;
 }
 
+body{
+    background: #f2b40e;
+}
+
+#title{
+    position: absolute;
+    left: 2vw;
+    top: 2vh;
+}
+
+#instructions{
+    margin-top: 2vw;
+    font-size: 13px;
+    color: #636363;
+}
+
+h5{
+    color: #636363;
+    font-weight: 200;
+}
+h5 span{
+    color: #ff4444;
+}
+
+h5 i {
+    color: #dad8d8;
+    font-style: normal;
+}
+
 #clientsConnected {
     z-index: 999;
     padding: 0;
