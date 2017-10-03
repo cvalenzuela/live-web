@@ -36,7 +36,7 @@ module.exports = socket => {
 
   // Client Sends Face Position
   socket.on('clientFacePosition', clientFacePosition => {
-    clients[socket.id].pos = clientFacePosition;
+    clients[socket.id] && (clients[socket.id].pos = clientFacePosition);
   
     socket.emit('updateFaceData', clients);
     socket.broadcast.emit('updateFaceData', clients);

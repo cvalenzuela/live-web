@@ -267,10 +267,13 @@ var pingTheMesh = function pingTheMesh() {
 };
 
 var updateMesh = function updateMesh(clients) {
-  for (var client in clients) {
-    facesGeometry.vertices[THREE.Math.randInt(clients[client].number * 3, clients[client].number * 3 + 2)].y += clients[client].pos.y;
+  try {
+    for (var client in clients) {
+      facesGeometry.vertices[THREE.Math.randInt(clients[client].number * 3, clients[client].number * 3 + 2)].y += clients[client].pos.y;
+    }
+  } catch (error) {
+    console.log(error);
   }
-  //facesGeometry.verticesNeedUpdate = true
 };
 
 exports.init = init;

@@ -135,10 +135,13 @@ let pingTheMesh = () => {
 };
 
 let updateMesh = clients => {
-  for(let client in clients){
-    facesGeometry.vertices[THREE.Math.randInt(clients[client].number * 3, clients[client].number * 3 + 2)].y += clients[client].pos.y;
+  try {
+    for(let client in clients){
+      facesGeometry.vertices[THREE.Math.randInt(clients[client].number * 3, clients[client].number * 3 + 2)].y += clients[client].pos.y;
+    }
+  } catch (error) {
+    console.log(error)
   }
-  //facesGeometry.verticesNeedUpdate = true
 }
 
 export { init, pingTheMesh, updateMesh }
