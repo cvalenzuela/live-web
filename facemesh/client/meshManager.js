@@ -100,10 +100,10 @@ let update = () => {
   //facesGeometry.vertices[THREE.Math.randInt(userId * 3, userId * 3 + 2)].y += offsetY.y;
   //y = facesGeometry.vertices[THREE.Math.randInt(userId * 3, userId * 3 + 2)].y;
 
-  if ((new Date).getSeconds() % 2 == 0) {
-    emitFacePosition(offsetY);
-  } 
-
+  // if ((new Date).getSeconds() % 2 == 0) {
+  //   emitFacePosition(offsetY);
+  // } 
+  emitFacePosition(offsetY);
   // Scale the mesh
   mesh.scale.x = scale.x;
   mesh.scale.y = scale.y;
@@ -128,10 +128,10 @@ let render = () => {
 
 // Tween Animations
 let pingTheMesh = () => {
-  // let scale2x = new TWEEN.Tween(scale).to({ x: 1.5, y: 1.5, z: 1.5 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
-  // setTimeout(() => {
-  //   let scale1x = new TWEEN.Tween(scale).to({ x: 1, y: 1, z: 1 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
-  // }, 300);
+  let scale2x = new TWEEN.Tween(scale).to({ x: 1.3, y: 1.3, z: 1.3 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
+  setTimeout(() => {
+    let scale1x = new TWEEN.Tween(scale).to({ x: 1, y: 1, z: 1 }, 300).easing(TWEEN.Easing.Quadratic.Out).start();
+  }, 300);
 };
 
 let updateMesh = clients => {
