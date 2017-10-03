@@ -136,7 +136,6 @@ let pingTheMesh = () => {
 
 let updateMesh = clients => {
   for(let client in clients){
-    console.log(clients[client].pos.y);
     facesGeometry.vertices[THREE.Math.randInt(clients[client].number * 3, clients[client].number * 3 + 2)].y += clients[client].pos.y;
   }
   //facesGeometry.verticesNeedUpdate = true
