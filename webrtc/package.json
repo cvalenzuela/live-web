@@ -1,0 +1,33 @@
+{
+  "name": "webrtc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch:client": "watchify dev/public/js/index.js --outfile dev/public/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "build:client": "rimraf dist/public && copyfiles -f dev/public/*.html dev/public/*.css dist/public && browserify dev/public/js/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > dist/public/bundle.js",
+    "watch:server": "nodemon dev/index.js --exec babel-node",
+    "build:server": "del-cli dist/*.js && babel dev/ -d dist",
+    "build:all": "npm run build:server && npm run build:client"
+  },
+  "author": "Cristobal Valenzuela <cvalenzuela@nyu.edu> (https://github.com/cvalenzuela)",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-2": "6.24.1",
+    "babel-watch": "2.0.7",
+    "babelify": "7.3.0",
+    "browserify": "14.4.0",
+    "copyfiles": "1.2.0",
+    "del-cli": "1.1.0",
+    "nodemon": "1.12.1",
+    "rimraf": "2.6.2",
+    "uglifyify": "4.0.4",
+    "watchify": "3.9.0"
+  },
+  "dependencies": {
+    "express": "4.16.1",
+    "socket.io": "2.0.3"
+  }
+}
