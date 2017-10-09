@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch:client": "watchify dev/public/js/index.js --outfile dev/public/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "watch:client": "watchify dev/public/js/*.js --outfile dev/public/bundle.js -t [ babelify --presets [ es2015 ] ]",
     "build:client": "rimraf dist/public && copyfiles -f dev/public/*.html dev/public/*.css dist/public && browserify dev/public/js/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > dist/public/bundle.js",
-    "watch:server": "nodemon dev/index.js --exec babel-node",
+    "watch:server": "nodemon dev/server.js --exec babel-node",
     "build:server": "del-cli dist/*.js && babel dev/ -d dist",
     "build:all": "npm run build:server && npm run build:client"
   },
