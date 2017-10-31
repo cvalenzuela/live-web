@@ -11,7 +11,7 @@ import socket from 'socket.io';
 import { handleSocket } from './handleSocket';
 const app = express();
 let server, host, io;
-const PORT = process.env.PORT || 3232;
+const PORT = process.env.PORT || 3333;
 
 
 // Check for Prod or Dev Server

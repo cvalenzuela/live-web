@@ -7,12 +7,23 @@ var socket = _interopRequireWildcard(_socket);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+var startBtn = document.getElementById('startButton'); // WebRTC Demo
+
+var callBtn = document.getElementById('callButton');
+var username = document.getElementById('username');
+var usernameToCall = document.getElementById('usernameToCall');
+
 window.onload = function () {
-  var video = document.querySelector('video');
+  startBtn.addEventListener('click', function () {
+    socket.init(username.value);
+  });
+  callBtn.addEventListener('click', function () {
+    socket.call(usernameToCall.value);
+  });
   window.init = socket.init;
-  window.makeOffer = socket.makeOffer;
-  socket.getUserMedia(video);
-}; // WebRTC Demo
+  window.call = socket.call;
+  socket.getUserMedia();
+};
 
 },{"./socket":2}],2:[function(require,module,exports){
 'use strict';
@@ -20,7 +31,7 @@ window.onload = function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.makeOffer = exports.registerUser = exports.getUserMedia = exports.init = undefined;
+exports.call = exports.registerUser = exports.getUserMedia = exports.init = undefined;
 
 var _socket = require('socket.io-client');
 
@@ -33,21 +44,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Client
 // Handle the socket
 
-var PORT = ':3232';
+var PORT = ':3333';
 var configuration = {
-  "iceServers": [{ "url": "stun:stun.l.google.com:19302" }]
+  "iceServers": _utils.STUNServers
 };
 var options = { video: true, audio: false };
 var socket = void 0;
 var connection = void 0;
+var localStream = void 0;
+
+var localVideo = document.getElementById('localVideo');
+var remoteVideo = document.getElementById('remoteVideo');
 
 // MediaStream API: Get User Media
-var getUserMedia = function getUserMedia(video) {
+var getUserMedia = function getUserMedia() {
+
   if (_utils.hasUserMedia) {
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
     navigator.getUserMedia(options, function (mediaStream) {
-      window.m = mediaStream;
-      video.src = window.URL.createObjectURL(mediaStream);
+      localStream = mediaStream;
+      localVideo.src = window.URL.createObjectURL(localStream);
     }, function (err) {
       console.log(err);
     });
@@ -62,6 +78,13 @@ var init = function init(username) {
   socket.on('connect', function () {
     console.log('Connected to server on port ' + PORT);
   });
+  connection = new RTCPeerConnection(configuration);
+  connection.addStream(localStream);
+  connection.onaddstream = function (e) {
+    console.log('got a streeeeam!');
+    remoteVideo.src = window.URL.createObjectURL(e.stream);
+  };
+  console.log("RTCPeerConnection object was created", connection);
   startEventListeners();
 };
 
@@ -70,10 +93,13 @@ var registerUser = function registerUser(username) {
   socket.emit('register', username);
 };
 
-var makeOffer = function makeOffer(userToConnect) {
-  connection = new RTCPeerConnection(configuration);
-  console.log("RTCPeerConnection object was created", connection);
+// Call a user
+var call = function call(userToConnect) {
+  connection.oniceconnectionstatechange = function (event) {
+    console.log(event);
+  };
   connection.onicecandidate = function (event) {
+    console.log('emiting candiate', event);
     if (event.candidate) {
       console.log('emiting candidate', event);
       socket.emit('candidate', { type: 'candidate', candidate: event.candidate, username: userToConnect });
@@ -123,7 +149,7 @@ var startEventListeners = function startEventListeners() {
 exports.init = init;
 exports.getUserMedia = getUserMedia;
 exports.registerUser = registerUser;
-exports.makeOffer = makeOffer;
+exports.call = call;
 
 },{"./utils":3,"socket.io-client":36}],3:[function(require,module,exports){
 "use strict";
@@ -139,7 +165,10 @@ var hasUserMedia = function hasUserMedia() {
   return !!navigator.getUserMedia;
 };
 
+var STUNServers = [{ "url": "stun:stun.l.google.com:19302" }, { "url": "stun:stun.l.google.com:19302" }, { "url": "stun:stun1.l.google.com:19302" }, { "url": "stun:stun2.l.google.com:19302" }, { "url": "stun:stun3.l.google.com:19302" }, { "url": "stun:stun4.l.google.com:19302" }, { "url": "stun:stun01.sipphone.com" }, { "url": "stun:stun.ekiga.net" }, { "url": "stun:stun.fwdnet.net" }, { "url": "stun:stun.ideasip.com" }, { "url": "stun:stun.iptel.org" }, { "url": "stun:stun.rixtelecom.se" }, { "url": "stun:stun.schlund.de" }, { "url": "stun:stunserver.org" }, { "url": "stun:stun.softjoys.com" }, { "url": "stun:stun.voiparound.com" }, { "url": "stun:stun.voipbuster.com" }, { "url": "stun:stun.voipstunt.com" }, { "url": "stun:stun.voxgratia.org" }, { "url": "stun:stun.xten.com" }];
+
 exports.hasUserMedia = hasUserMedia;
+exports.STUNServers = STUNServers;
 
 },{}],4:[function(require,module,exports){
 module.exports = after

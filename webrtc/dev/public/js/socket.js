@@ -2,23 +2,28 @@
 // Handle the socket
 
 import io from 'socket.io-client';
-import { hasUserMedia } from './utils';
+import { hasUserMedia, STUNServers } from './utils';
 
-const PORT = ':3232';
+const PORT = ':3333';
 let configuration = {
-  "iceServers": [{ "url": "stun:stun.l.google.com:19302" }]
+  "iceServers": STUNServers
 };
 const options = { video: true, audio: false };
 let socket;
 let connection;
+let localStream;
+
+let localVideo = document.getElementById('localVideo');
+let remoteVideo = document.getElementById('remoteVideo');
 
 // MediaStream API: Get User Media
-let getUserMedia = (video) => {
+let getUserMedia = () => {
+
   if (hasUserMedia) {
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-    navigator.getUserMedia(options, (mediaStream) => {
-      window.m = mediaStream;
-      video.src = window.URL.createObjectURL(mediaStream);
+    navigator.getUserMedia(options, mediaStream => {
+      localStream = mediaStream;
+      localVideo.src = window.URL.createObjectURL(localStream);
     }, (err) => {
       console.log(err)
     });
@@ -33,6 +38,13 @@ let init = username => {
   socket.on('connect', () => {
     console.log(`Connected to server on port ${PORT}`);
   });
+  connection = new RTCPeerConnection(configuration);
+  connection.addStream(localStream);
+  connection.onaddstream = e => {
+    console.log('got a streeeeam!');
+    remoteVideo.src = window.URL.createObjectURL(e.stream);
+  }
+  console.log("RTCPeerConnection object was created", connection);
   startEventListeners();
 }
 
@@ -41,13 +53,16 @@ let registerUser = username => {
   socket.emit('register', username);
 }
 
-let makeOffer = userToConnect => {
-  connection = new RTCPeerConnection(configuration);
-  console.log("RTCPeerConnection object was created", connection);
+// Call a user
+let call = userToConnect => {
+  connection.oniceconnectionstatechange = event => {
+    console.log(event);
+  };
   connection.onicecandidate = event => {
+    console.log('emiting candiate', event)
     if (event.candidate) {
       console.log('emiting candidate', event)
-      socket.emit('candidate', { type: 'candidate', candidate: event.candidate, username: userToConnect })
+      socket.emit('candidate', { type: 'candidate', candidate: event.candidate, username: userToConnect });
     } else {
       console.log('not emmitting a candidate')
     }
@@ -91,4 +106,4 @@ let startEventListeners = () => {
   });
 };
 
-export  { init, getUserMedia, registerUser, makeOffer }
+export  { init, getUserMedia, registerUser, call }

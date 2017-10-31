@@ -50,7 +50,7 @@ let handleSocket = (io, socket) => {
 
   // Clients answers an offer.
   socket.on('answer', data => {
-    if(usernames.has(data.username)){
+    if (usernames.has(data.username)) {
       for (let client of clients) {
         if (client.username == data.username) {
           client.emit('answer', {
@@ -63,9 +63,9 @@ let handleSocket = (io, socket) => {
     }
   });
 
-  // Candidate to Connect
+  // ICEcandidate
   socket.on('candidate', data => {
-    if(usernames.has(data.username)){
+    if (usernames.has(data.username)) {
       for (let client of clients) {
         if (client.username == data.username) {
           client.emit('candidate', {
